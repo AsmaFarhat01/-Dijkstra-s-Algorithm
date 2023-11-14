@@ -1,0 +1,63 @@
+#include <iostream>
+#include <limits.h>
+using namespace std;
+
+#define V 9
+
+int minDistance(int dist[], bool sptSet[]) {
+    int min = INT_MAX, min_index;
+    for (int v = 0; v < V; v++)
+        if (sptSet[v] == false && dist[v] <= min)
+            min = dist[v], min_index = v;
+    return min_index;
+}
+
+void printSolution(int dist[]) {
+    cout << "Vertex \t Distance from Source" << endl;
+    for (int i = 0; i < V; i++)
+        cout << i << " \t\t\t\t" << dist[i] << endl;
+}
+
+void dijkstra(int graph[V][V], int src, int dest) {
+    int dist[V];
+    bool sptSet[V];
+    for (int i = 0; i < V; i++)
+        dist[i] = INT_MAX, sptSet[i] = false;
+
+    dist[src] = 0;
+
+    for (int count = 0; count < V - 1; count++) {
+        int u = minDistance(dist, sptSet);
+        sptSet[u] = true;
+
+        for (int v = 0; v < V; v++)
+            if (!sptSet[v] && graph[u][v] && dist[u] != INT_MAX && dist[u] + graph[u][v] < dist[v])
+                dist[v] = dist[u] + graph[u][v];
+    }
+
+    printSolution(dist);
+    cout << "The cost of the shortest path from " << src << " to " << dest << " is: " << dist[dest] << endl;
+}
+
+int main() {
+    int graph[V][V];
+
+    // Take user input for the graph
+    cout << "Enter the graph adjacency matrix (space-separated values):" << endl;
+    for (int i = 0; i < V; i++)
+        for (int j = 0; j < V; j++)
+            cin >> graph[i][j];
+
+    int start_node, end_node;
+
+    // Take user input for the starting and ending nodes
+    cout << "Enter the starting node: ";
+    cin >> start_node;
+
+    cout << "Enter the ending node: ";
+    cin >> end_node;
+
+    dijkstra(graph, start_node, end_node);
+
+    return 0;
+}
